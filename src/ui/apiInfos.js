@@ -72,11 +72,11 @@ getIDUser(myInit)
                         fetch(`https://api.twitch.tv/helix/streams?user_login=${nameLogin}`, myInit).then((respota)=>{
                             respota.json().then( (data) =>{
                                 if(data.data[0] == undefined){
-
+                                    console.log('ta indo 1')
                                     createElm(nameLogin, `https://www.twitch.tv/${nameLogin}`, dataProfile.data[0].profile_image_url, 'none')
                                 }else{
 
-
+                                    console.log('ta indo 2')
                                     createElm(nameLogin, `https://www.twitch.tv/${nameLogin}`, dataProfile.data[0].profile_image_url, 'online')
                                 }
                             })
