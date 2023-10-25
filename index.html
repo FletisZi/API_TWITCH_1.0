@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script defer >  
+        /* 
+        Fazer requisição para solicitar token de acesso / verifica se existe na url da
+        pagina caso nao ira direcionar para o cliente autorizar e assim gerar o token de 
+        acesso/ logo é redirecionado para pagina home
+        */
+
+        window.addEventListener('DOMContentLoaded',()=>{
+
+        const urlReturn = document.location.hash;
+
+        if(urlReturn.search(/(#access_token=)/ig) != -1){
+            const urlReturncut = urlReturn.replace(/(#access_token=)/ig,'')
+            const acess_token = urlReturncut.slice(0,30)
+            localStorage.setItem('Id_user',JSON.stringify(acess_token) );
+            window.location.href = "./home.html"
+
+        }else{
+            window.location.href = "https://id.twitch.tv/oauth2/authorize?response_type=token&client_id=b1cjxtyr3w1e2u9t7t6mkq10el3rct&redirect_uri=https://apitfletiszi.netlify.app&scope=user:read:follows&force_verify=true"
+        }
+
+
+        });
+        
+    
+    
+    </script>
+</body>
+</html>
