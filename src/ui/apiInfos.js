@@ -17,19 +17,22 @@ var myInit = {
 
 // função que crias os cards de cada canal assinado
 
-function createElm(text,link,imgURL){
+function createElm(text,link,imgURL,classOnline){
 
     const container = document.querySelector('#container');
     
     let Li = document.createElement('li')
     let buttons = document.createElement('a')
+    let bannerOnline = document.createElement('div')
     let imgProfile = document.createElement('img')
     let description = document.createElement('span')
     description.textContent+= `${text}`;
-    imgProfile.src = `${imgURL}`
-    buttons.appendChild(imgProfile)
-    buttons.appendChild(description)
-    buttons.href = `${link}`
+    imgProfile.src = `${imgURL}`;
+    bannerOnline.className = `${classOnline}`;
+    bannerOnline.appendChild(imgProfile);
+    buttons.appendChild(bannerOnline);
+    buttons.appendChild(description);
+    buttons.href = `${link}`;
     
     
     Li.appendChild(buttons)
@@ -37,7 +40,6 @@ function createElm(text,link,imgURL){
     container.appendChild(Li);
 
 }
-
 
 
 
@@ -67,7 +69,21 @@ getIDUser(myInit)
 
                     prmisseImg.then((dataProfile)=>{
                         
-                        createElm(nameLogin, `https://www.twitch.tv/${nameLogin}`, dataProfile.data[0].profile_image_url)
+                        fetch(`https://api.twitch.tv/helix/streams?user_login=${nameLogin}`, myInit).then((respota)=>{
+                            respota.json().then( (data) =>{
+                                if(data.data[0] == undefined){
+
+                                    createElm(nameLogin, `https://www.twitch.tv/${nameLogin}`, dataProfile.data[0].profile_image_url, 'none')
+                                }else{
+
+
+                                    createElm(nameLogin, `https://www.twitch.tv/${nameLogin}`, dataProfile.data[0].profile_image_url, 'online')
+                                }
+                            })
+                        })
+
+
+                        
                     })
 
                     
