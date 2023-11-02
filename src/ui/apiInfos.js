@@ -51,6 +51,8 @@ const allFollowed = await getAllFollowed(userId.id, myInit);
 
 let allFollowedLive = [];
 
+const userLogin = '';
+
 const imgProfile = document.querySelector('#imgProfile');
 
 imgProfile.src = `${userId.profile_image_url}`;
@@ -66,8 +68,8 @@ for(const objectFollowed of allFollowed){
 
     if (data.data.length > 0 ){
         allFollowedLive.push(data.data);
-        const userLogin = allFollowedLive[0][0].user_login;
-        document.querySelector('iframe').src = `https://player.twitch.tv/?channel=${userLogin}&autoplay=false&parent=apitfletiszi.netlify.app`;
+        userLogin = allFollowedLive[0][0].user_login;
+        
 
     }
 
@@ -95,6 +97,7 @@ for(const objectFollowed of allFollowed){
     
 }
 
+document.querySelector('iframe').src = `https://player.twitch.tv/?channel=${userLogin}&autoplay=false&parent=apitfletiszi.netlify.app`;
 
 
 
