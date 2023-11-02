@@ -51,7 +51,7 @@ const allFollowed = await getAllFollowed(userId.id, myInit);
 
 let allFollowedLive = [];
 
-const userLogin = '';
+let userLogin = '';
 
 const imgProfile = document.querySelector('#imgProfile');
 
