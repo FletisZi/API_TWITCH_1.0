@@ -35,7 +35,7 @@ function createElm(text,link,imgURL,classOnline){
     buttons.href = `#!`;
     Li.appendChild(buttons)
     Li.addEventListener('click', ()=>{
-        document.querySelector('iframe').src = `https://player.twitch.tv/?channel=${link}&autoplay=false&parent=apitfletiszi.netlify.app`
+        document.querySelector('iframe').src = `https://player.twitch.tv/?channel=${text}&autoplay=true&parent=apitfletiszi.netlify.app`
     })
 
     container.appendChild(Li);
