@@ -1,4 +1,4 @@
-import { getAllFollowed,getImgUsers,getIDUser } from "./apiGet.js";
+import { getAllFollowed,getImgUsers,getIDUser, getChannelLive } from "./apiGet.js";
 
 // recupera o token de acesso que foi guardado local storage;
 
@@ -15,7 +15,7 @@ var myInit = {
     cache: "default",
 };
 
-// função que crias os cards de cada canal assinado
+
 
 function createElm(text,link,imgURL,classOnline){
 
@@ -32,10 +32,11 @@ function createElm(text,link,imgURL,classOnline){
     bannerOnline.appendChild(imgProfile);
     buttons.appendChild(bannerOnline);
     buttons.appendChild(description);
-    buttons.href = `${link}`;
-    
-    
+    buttons.href = `#!`;
     Li.appendChild(buttons)
+    Li.addEventListener('click', ()=>{
+        document.querySelector('iframe').src = `https://player.twitch.tv/?channel=${link}&autoplay=false&parent=apitfletiszi.netlify.app`
+    })
 
     container.appendChild(Li);
 
@@ -44,58 +45,146 @@ function createElm(text,link,imgURL,classOnline){
 
 
 
-// buscar id do usuario logado com conta twitch
+const userId = await getIDUser(myInit);
 
-getIDUser(myInit)
-    .then( data =>{
+const allFollowed = await getAllFollowed(userId.id, myInit);
 
-        const idUser = data.id;
-        const imgProfile = document.querySelector('#imgProfile')
-        imgProfile.src = `${data.profile_image_url}`
+let allFollowedLive = [];
 
-        //ira verificar todos os canais que o usuario assinou
-        
-        getAllFollowed( idUser, myInit ).then( (data) => {
+const imgProfile = document.querySelector('#imgProfile');
 
-            data.map((data, index)=>{
-
-                if(index < 20){
-
-                    const nameLogin = data.broadcaster_login;
-                    
-                    //busca as imagem de todos os canais que o usuario assinou
-
-                    const prmisseImg = getImgUsers( nameLogin, myInit);
-
-                    prmisseImg.then((dataProfile)=>{
-                        
-                        fetch(`https://api.twitch.tv/helix/streams?user_login=${nameLogin}`, myInit).then((respota)=>{
-                            respota.json().then( (data) =>{
-                                if(data.data[0] == undefined){
-                                    console.log('ta indo 1')
-                                    createElm(nameLogin, `https://www.twitch.tv/${nameLogin}`, dataProfile.data[0].profile_image_url, 'none')
-                                }else{
-
-                                    console.log('ta indo 2')
-                                    createElm(nameLogin, `https://www.twitch.tv/${nameLogin}`, dataProfile.data[0].profile_image_url, 'online')
-                                }
-                            })
-                        })
+imgProfile.src = `${userId.profile_image_url}`;
 
 
-                        
-                    })
 
-                    
-                }
 
+for(const objectFollowed of allFollowed){
+
+    const nameLogin = objectFollowed.broadcaster_login
+
+    const data = await getChannelLive(nameLogin, myInit);
+
+    if (data.data.length > 0 ){
+        allFollowedLive.push(data.data);
+        const userLogin = allFollowedLive[0][0].user_login;
+        document.querySelector('iframe').src = `https://player.twitch.tv/?channel=${userLogin}&autoplay=false&parent=apitfletiszi.netlify.app`;
+
+    }
+
+    const prmisseImg = getImgUsers( nameLogin, myInit);
+
+        prmisseImg.then((dataProfile)=>{
+            
+            fetch(`https://api.twitch.tv/helix/streams?user_login=${nameLogin}`, myInit).then((respota)=>{
+                respota.json().then( (data) =>{
+                    if(data.data[0] == undefined){
+
+                        createElm(nameLogin, `https://www.twitch.tv/${nameLogin}`, dataProfile.data[0].profile_image_url, 'none')
+                    }else{
+
+
+                        createElm(nameLogin, `https://www.twitch.tv/${nameLogin}`, dataProfile.data[0].profile_image_url, 'online')
+                    }
+                })
             })
+
+
+            
         })
+
+    
 }
 
-)
 
 
 
+
+
+
+
+// função que crias os cards de cada canal assinado
+{
+
+
+// function createElm(text,link,imgURL,classOnline){
+
+//     const container = document.querySelector('#container');
+    
+//     let Li = document.createElement('li')
+//     let buttons = document.createElement('a')
+//     let bannerOnline = document.createElement('div')
+//     let imgProfile = document.createElement('img')
+//     let description = document.createElement('span')
+//     description.textContent+= `${text}`;
+//     imgProfile.src = `${imgURL}`;
+//     bannerOnline.className = `${classOnline}`;
+//     bannerOnline.appendChild(imgProfile);
+//     buttons.appendChild(bannerOnline);
+//     buttons.appendChild(description);
+//     buttons.href = `${link}`;
+    
+    
+//     Li.appendChild(buttons)
+
+//     container.appendChild(Li);
+
+// }
+
+
+
+
+// // buscar id do usuario logado com conta twitch
+
+// getIDUser(myInit)
+//     .then( data =>{
+
+//         const idUser = data.id;
+//         const imgProfile = document.querySelector('#imgProfile')
+//         imgProfile.src = `${data.profile_image_url}`
+
+//         //ira verificar todos os canais que o usuario assinou
+        
+//         getAllFollowed( idUser, myInit ).then( (data) => {
+
+//             data.map((data, index)=>{
+
+//                 if(index < 20){
+
+//                     const nameLogin = data.broadcaster_login;
+                    
+//                     //busca as imagem de todos os canais que o usuario assinou
+
+//                     const prmisseImg = getImgUsers( nameLogin, myInit);
+
+//                     prmisseImg.then((dataProfile)=>{
+                        
+//                         fetch(`https://api.twitch.tv/helix/streams?user_login=${nameLogin}`, myInit).then((respota)=>{
+//                             respota.json().then( (data) =>{
+//                                 if(data.data[0] == undefined){
+//                                     console.log('ta indo 1')
+//                                     createElm(nameLogin, `https://www.twitch.tv/${nameLogin}`, dataProfile.data[0].profile_image_url, 'none')
+//                                 }else{
+
+//                                     console.log('ta indo 2')
+//                                     createElm(nameLogin, `https://www.twitch.tv/${nameLogin}`, dataProfile.data[0].profile_image_url, 'online')
+//                                 }
+//                             })
+//                         })
+
+
+                        
+//                     })
+
+                    
+//                 }
+
+//             })
+//         })
+// }
+
+// )
+
+
+}
  
 

@@ -18,4 +18,10 @@ async function getImgUsers(login,myInit){
     return (data)
 }
 
-export {getAllFollowed,getImgUsers,getIDUser}
+async function getChannelLive(broadcaster_login,myInit) { 
+    const response  = await fetch(`https://api.twitch.tv/helix/streams?user_login=${broadcaster_login}`, myInit)  
+    return response.json();
+    
+}
+
+export {getAllFollowed,getImgUsers,getIDUser,getChannelLive}
